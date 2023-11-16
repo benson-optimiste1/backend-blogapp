@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import { MongoClient } from 'mongodb'
+import { MongoClient, ObjectId } from 'mongodb'
 
 import 'dotenv/config'
 
@@ -41,6 +41,18 @@ app.post('/login',async (req, res) => {
 	console.log(req.body)
 	const userFound = await usersDb.findOne({email:req.body.email})
 	res.send(userFound)
-
 })
-app.listen('8080', () => console.log('Api listening on port 8080 😎'))
+
+// delete on blog post
+app.delete('/', async (req, res) => {
+	console.log(req.params)
+
+	const _id= new ObjectId(req.params._id)
+	// 1. get item from request
+	// 2. get id from item
+	// 3. we pass id into findOneAndDelete
+	const itemDeleted = await blogPosts.findOneAndDelete({ _id: _id })
+	res.send(itemDeleted)
+})
+
+app.listen(process.env.PORT || 8080, () => console.log('Api listening on port 8080 😎'))
